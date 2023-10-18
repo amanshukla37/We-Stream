@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %} - We Stream</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">  <!-- Required meta tags -->
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    </head>
+    <body>
+        <div class="container1">
+                    <!-- Content here -->
+
+                    {% load static %}
+            
+                    <img class="logo" src="{% static 'img/White_Black_Simple_Initial_Logo-removebg-preview.png' %}" alt="" height="55px">
+                    <ul class="nav">
+                    <li>
+        
+                        <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="/">Home</a>
+                    </li>
+                    <li>
+                        <a class="nav-link {% if request.path == '/new_video' %} active {% endif %}" href="/new_video">Upload Video</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a class="nav-link" href="/logout">Log Out!</a>
+                    </li>
+                    {% else %}
+                    <li>
+                            <a class="nav-link {% if request.path == '/login' %} active {% endif %}" href="/login">Sign In</a>
+                        </li>
+                    <li>
+                            <a class="nav-link {% if request.path == '/register' %} active {% endif %}" href="/register">Sign Up</a>
+                    </li>
+                    {% endif %}
+                    </ul>
+            
+            <!-- <br> -->
+            
+        </div>
+        <br>
+       
+        <div class="container-fluid">
+        {% block body %}
+        {% endblock %}        
+        </div>  
+      
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <style>
+        
+        body{
+            background:#1a1a1a;
+        }
+        #djDebug{
+            display: none !important;
+        }
+        
+        .nav{
+            text-align: right;
+            justify-content:right;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin-right: 20px;
+            margin-top: 10px;
+            
+            
+        }
+        .nav li a{
+            color: #1a1a1a;
+            font-size: 20px;
+            margin-right: 20px;
+            font-family: 'Itim';
+        }
+        .container1{
+            width: 100%;
+            display:flex;
+            height: 80px;
+            justify-content: space-between;
+            background-color: aqua;
+        }
+        .logo{
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+    </style>
+    </body>
+</html>

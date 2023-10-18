@@ -1,0 +1,199 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Video - 
+{% endblock %}
+
+
+{% block body %}
+
+
+<h2 style="color:white" >{{ video.title }}</h2>
+
+<center>
+  <!-- <video width="90%" height="500" controls>
+    <source src="{{ video.path }}" type="video/mp4">
+  Your browser does not support the video tag.
+  </video> -->
+
+  <video src="{{ video.path }}" class="video"></video>
+    <div class="controls">
+      <button class="playPauseBtn" title=Play/Pause><i class="fa fa-play"></i></button>
+      <button class="stop" title="Stop"><i class="fas fa-stop"></i></button>
+      <input type="range" class="slider" value="0" />
+      <p class="timer">00:00</p>
+      <button class="loop loop-off" title="Loop Video"><i class="fas fa-redo"></i></button>
+      <button class="expand" title="full screen"><i class="fas fa-expand"></i></button>
+    </div>
+</center>
+<p style="color: white;" >{{ video.description }}</p>
+<br><br>
+<h3 style="color: white;" >Comments</h3>
+
+{% if form %}
+<form action="/comment" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type='hidden' name='video' value='{{ video.id }}'>
+    <br>
+    <button type="submit" class="btn btn-primary">Post Comment!</button>
+</form>
+<style>
+  .djdt-hidden{
+    display:none !important;
+  }
+
+  .video {
+  width: 70%;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+.controls {
+  width: 70%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  background: #505050;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+.controls * {
+  margin: 0 2px;
+  padding: 1px;
+}
+.slider {
+  width: 100%;
+  height: 0.5rem;
+}
+.timer {
+  color: #f4f4f4;
+}
+.controls button {
+  background: transparent;
+  color: #f4f4f4;
+  border: none;
+}
+.controls .playPauseBtn {
+  color: #fff;
+}
+.controls .stop {
+  color: #ff3030;
+}
+.loop.loop-on {
+  color: #a9a9ff;
+}
+i {
+  pointer-events: none;
+}
+button,
+input[type="range"] {
+  cursor: pointer;
+}
+@media screen and (max-width: 920px) {
+  .video,
+  .controls {
+    width: 90%;
+  }
+}
+</style>
+
+<script>
+  let video, playPauseBtn, stopBtn, slider, loopBtn;
+video = document.querySelector(".video");
+playPauseBtn = document.querySelector(".playPauseBtn");
+stopBtn = document.querySelector(".stop");
+slider = document.querySelector(".slider");
+loopBtn = document.querySelector(".loop");
+expandBtn = document.querySelector(".expand");
+timer = document.querySelector(".timer");
+
+function updateIcon() {
+  if (video.paused) {
+    playPauseBtn.innerHTML = "<i class='fas fa-play'></i>";
+    playPauseBtn.style.color = "#fff";
+  } else {
+    playPauseBtn.innerHTML = "<i class='fas fa-pause'></i>";
+    playPauseBtn.style.color = "#f4f4f4";
+  }
+}
+function toggleVideoStatus() {
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
+}
+function stopVideo() {
+  video.currentTime = 0;
+  setSliderAndTimer();
+  video.pause();
+}
+
+function setSliderAndTimer() {
+  //get minutes
+  let minutes = Math.floor(video.currentTime / 60);
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  //get seconds
+  let seconds = Math.floor(video.currentTime % 60);
+  if (seconds < 10) {
+    seconds = "0" + seconds;
+  }
+  timer.textContent = `${minutes}:${seconds}`;
+  slider.value = (video.currentTime / video.duration) * 100;
+  if (video.currentTime == video.duration) {
+    slider.value = 0;
+    stopVideo();
+  }
+}
+function seeked() {
+  video.currentTime = (slider.value / 100) * video.duration;
+}
+function changeLoopStatus() {
+  if (loopBtn.classList.contains("loop-off")) {
+    loopBtn.classList.remove("loop-off");
+    loopBtn.classList.add("loop-on");
+    video.loop = true;
+  } else {
+    loopBtn.classList.remove("loop-on");
+    loopBtn.classList.add("loop-off");
+    video.loop = false;
+  }
+}
+function openFullscreen() {
+  if (video.requestFullscreen) {
+    video.requestFullscreen();
+  } else if (video.mozRequestFullScreen) {
+    /* Firefox */
+    video.mozRequestFullScreen();
+  } else if (video.webkitRequestFullscreen) {
+    /* Chrome, Safari & Opera */
+    video.webkitRequestFullscreen();
+  } else if (video.msRequestFullscreen) {
+    /* IE/Edge */
+    video.msRequestFullscreen();
+  }
+}
+
+//event listeners
+playPauseBtn.addEventListener("click", toggleVideoStatus);
+video.addEventListener("play", updateIcon);
+video.addEventListener("pause", updateIcon);
+stopBtn.addEventListener("click", stopVideo);
+video.addEventListener("timeupdate", setSliderAndTimer);
+slider.addEventListener("input", seeked);
+loopBtn.addEventListener("click", changeLoopStatus);
+expandBtn.addEventListener("click", openFullscreen);
+</script>
+{% endif %}
+
+{% for comment in comments %}
+<p>
+{{ comment.user }} posted on: {{ comment.datetime }} <br>
+{{ comment.text }}
+</p>
+{% endfor %}
+
+
+{% endblock %}
